@@ -12,17 +12,16 @@ export default class UploadFiles extends Component {
       currentFile: undefined,
       progress: 0,
       message: "",
-
+      prediction:0,
+      prediction2:0,
+      mjsPrediction:"",
+      mjsPrediction2: "",
       fileInfos: [],
     };
   }
 
   componentDidMount() {
-    UploadService.getFiles().then((response) => {
-      this.setState({
-        fileInfos: response.data,
-      });
-    });
+
   }
 
   selectFile(event) {
@@ -46,19 +45,18 @@ export default class UploadFiles extends Component {
     })
       .then((response) => {
         this.setState({
-          message: response.data.message,
+          message: response.data.predictions[0].tagName,
+            mjsPrediction: response.data.predictions[0].tagName,
+            prediction: response.data.predictions[0].probability,
+          mjsPrediction2: response.data.predictions[1].tagName,
+          prediction2: response.data.predictions[1].probability,
+
         });
-        return UploadService.getFiles();
-      })
-      .then((files) => {
-        this.setState({
-          fileInfos: files.data,
-        });
-      })
+       })
       .catch(() => {
         this.setState({
           progress: 0,
-          message: "Could not upload the file!",
+          message: "Error",
           currentFile: undefined,
         });
       });
@@ -74,7 +72,10 @@ export default class UploadFiles extends Component {
       currentFile,
       progress,
       message,
-      fileInfos,
+      prediction,
+      prediction2,
+      mjsPrediction2,
+
     } = this.state;
 
     return (
@@ -105,21 +106,25 @@ export default class UploadFiles extends Component {
         >
           Upload
         </button>
-
-        <div className="alert alert-light" role="alert">
-          {message}
+        <div className="card mt-4">
+          <div className="card-header">Resultado 1</div>
+          <div className="card-body">
+            <h5 className="card-title">Analisis de la planta: </h5>
+            <p className="card-text">Porcentaje de roya: </p>
+            <p className="card-text">{message}</p>
+            <h5 className="card-title">Probabilidad: </h5>
+            <p className="card-text"> % {prediction * 100}</p>
+          </div>
         </div>
-
-        <div className="card">
-          <div className="card-header">List of Files</div>
-          <ul className="list-group list-group-flush">
-            {fileInfos &&
-              fileInfos.map((file, index) => (
-                <li className="list-group-item" key={index}>
-                  <a href={file.url}>{file.name}</a>
-                </li>
-              ))}
-          </ul>
+        <div className="card mt-4">
+          <div className="card-header">Resultado 2</div>
+          <div className="card-body">
+            <h5 className="card-title">Analisis de la planta: </h5>
+            <p className="card-text">Porcentaje de roya: </p>
+            <p className="card-text">{mjsPrediction2}</p>
+            <h5 className="card-title">Probabilidad: </h5>
+            <p className="card-text"> % {prediction2 * 100}</p>
+          </div>
         </div>
       </div>
     );

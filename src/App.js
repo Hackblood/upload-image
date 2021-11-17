@@ -8,8 +8,8 @@ function App() {
   return (
     <div className="container" style={{ width: "600px" }}>
       <div style={{ margin: "20px" }}>
-        <h3>Roya Bot</h3>
-        <h4>Cargar Imagen</h4>
+        <h2>Royabot</h2>
+        <h5>Cargar imagen para analizar</h5>
       </div>
       <UploadFiles />
     </div>
